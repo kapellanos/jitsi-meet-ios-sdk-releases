@@ -19,21 +19,26 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /** Callback block for decoder. */
-typedef void (^RTCVideoDecoderCallback)(RTC_OBJC_TYPE(RTCVideoFrame) * frame);
+typedef void (^RTCVideoDecoderCallback)(RTCVideoFrame *frame);
 
 /** Protocol for decoder implementations. */
 RTC_OBJC_EXPORT
-@protocol RTC_OBJC_TYPE
-(RTCVideoDecoder)<NSObject>
+@protocol RTCVideoDecoder <NSObject>
 
-    - (void)setCallback : (RTCVideoDecoderCallback)callback;
-- (NSInteger)startDecodeWithNumberOfCores:(int)numberOfCores;
+- (void)setCallback:(RTCVideoDecoderCallback)callback;
+- (NSInteger)startDecodeWithSettings:(RTCVideoEncoderSettings *)settings
+                       numberOfCores:(int)numberOfCores
+    DEPRECATED_MSG_ATTRIBUTE("use startDecodeWithNumberOfCores: instead");
 - (NSInteger)releaseDecoder;
-- (NSInteger)decode:(RTC_OBJC_TYPE(RTCEncodedImage) *)encodedImage
+- (NSInteger)decode:(RTCEncodedImage *)encodedImage
         missingFrames:(BOOL)missingFrames
-    codecSpecificInfo:(nullable id<RTC_OBJC_TYPE(RTCCodecSpecificInfo)>)info
+    codecSpecificInfo:(nullable id<RTCCodecSpecificInfo>)info
          renderTimeMs:(int64_t)renderTimeMs;
 - (NSString *)implementationName;
+
+// TODO(andersc): Make non-optional when `startDecodeWithSettings:numberOfCores:` is removed.
+@optional
+- (NSInteger)startDecodeWithNumberOfCores:(int)numberOfCores;
 
 @end
 
